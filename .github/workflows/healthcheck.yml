@@ -1,0 +1,28 @@
+name: heathcheck API
+
+on:
+  workflow_dispatch: # Para ejecutar manualmente desde github.
+
+jobs:
+  healthcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Realizar healthcheck
+        run: |
+          echo "Haciendo request a la API https://$URL/healthcheck"
+          response=$(curl -sk -w "%{http_code}" -o /tmp/out.txt "https://$URL/healthcheck")
+          HTTP_CODE="$RESPONSE"
+          BODY=$(cat /tmp/out.txt)
+
+          echo "Código HTTP: $HTTP_CODE"
+          echo "Respuesta: $BODY"
+
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo " Health check FAILED"
+            exit 1
+          fi
+
+          echo " Health check PASSED"
+    env:
+      URL: ${{ secrets.URL }}
