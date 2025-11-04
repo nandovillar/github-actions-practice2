@@ -1,2 +1,3 @@
 node_modules
 healthcheck.yml
+healthcheck.test.js
